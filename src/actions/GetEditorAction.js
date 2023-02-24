@@ -1,9 +1,14 @@
 export const REQUEST_EDITOR                    = "REQUEST_EDITOR";
 export const REQUEST_EDITOR_TITLE_LIST_SUCCESS = "REQUEST_EDITOR_TITLE_LIST_SUCCESS";
 export const REQUEST_EDITOR_TITLE_LIST_FAIL = "REQUEST_EDITOR_TITLE_LIST_FAIL";
+
 export const REQUEST_EDITOR_BY_TITLE           = "REQUEST_EDITOR_BY_TITLE";
 export const REQUEST_EDITOR_SUCCESS            = "REQUEST_EDITOR_SUCCESS";
 export const REQUEST_EDITOR_FAIL               = "REQUEST_EDITOR_FAIL";
+
+export const UPLOAD_IMAGE                    = "UPLOAD_IMAGE";
+export const UPLOAD_IMAGE_SUCCESS            = "UPLOAD_IMAGE_SUCCESS";
+export const UPLOAD_IMAGE_FAIL               = "UPLOAD_IMAGE_FAIL";
 
 export const ADD_EDITOR         = "ADD_EDITOR";
 export const ADD_EDITOR_SUCCESS = "ADD_EDITOR_SUCCESS";

@@ -1,15 +1,10 @@
+import React, { useEffect, useState } from 'react';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+
 import { editorConfig } from './editorConfig.js';
-
-import React, { useEffect, useRef, useState } from 'react';
-
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  ADD_EDITOR,
-  REQUEST_EDITOR_BY_TITLE,
-  UPDATE_EDITOR,
-} from '../../actions/GetEditorAction';
+import * as GetEditorAction from '../../actions/GetEditorAction';
 import { useParams, useNavigate } from 'react-router-dom';
 import CustomModal from '../../components/CustomModal/CustomModal.jsx';
 
@@ -21,6 +16,10 @@ function IEditor({ props }) {
 
   const title = useSelector((state) => state.getEditorReducer.title);
   const content = useSelector((state) => state.getEditorReducer.content);
+  const imgDir = useSelector(
+    (state) => state.getEditorReducer.imageFileDirectory
+  );
+
   const returnMessage = useSelector(
     (state) => state.getEditorReducer.errorMessage
   );
@@ -28,6 +27,7 @@ function IEditor({ props }) {
   const [newTitle, setNewTitle] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(true);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [imageFileDirectory, setImageFileDirectory] = useState('');
 
   useEffect(() => {
     setNewTitle(title);
@@ -38,10 +38,13 @@ function IEditor({ props }) {
     ) {
       setIsModalOpen(false);
       setIsUpdateModalOpen(false);
+    } else if (returnMessage.indexOf('get successfully') !== -1) {
+      setImageFileDirectory(imgDir);
     }
+
     if (id) {
       dispatch({
-        type: REQUEST_EDITOR_BY_TITLE,
+        type: GetEditorAction.REQUEST_EDITOR_BY_TITLE,
         payload: {
           data: {
             id,
@@ -63,7 +66,7 @@ function IEditor({ props }) {
     }
     setIsUpdateModalOpen(true);
     dispatch({
-      type: UPDATE_EDITOR,
+      type: GetEditorAction.UPDATE_EDITOR,
       payload: {
         id,
         data: {
@@ -80,6 +83,36 @@ function IEditor({ props }) {
     navigate('/admin/editorList');
   }
 
+  function uploadPlugin(editor) {
+    editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+      return uploadAdapter(loader);
+    };
+  }
+
+  function uploadAdapter(loader) {
+    return {
+      upload: () => {
+        return new Promise((res, rej) => {
+          const imageFile = new FormData();
+          loader.file.then((file) => {
+            imageFile.append('files', file);
+            console.log(
+              '🚀 ~ file: IEditor.jsx:93 ~ loader.file.then ~ body:',
+              imageFile
+            );
+            dispatch({
+              type: GetEditorAction.UPLOAD_IMAGE,
+              payload: {
+                data: imageFile,
+              },
+            });
+            res(imageFileDirectory);
+          });
+        });
+      },
+    };
+  }
+
   return (
     <div className='App'>
       <div className='iEditor-Title-Container' key={id}>
@@ -93,7 +126,7 @@ function IEditor({ props }) {
       </div>
       <CKEditor
         editor={ClassicEditor}
-        config={editorConfig}
+        config={{ extraPlugins: [uploadPlugin] }}
         data={content}
         onReady={(editor) => {
           const data = editor.getData();

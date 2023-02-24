@@ -7,4 +7,6 @@ export const errorMessage = {
     addFail: 'add fail!',
     getFinish: 'get successfully',
     getFail: 'get fail!',
+    uploadImageFinish: 'upload image successfully',
+    uploadImageFail: 'upload image fail!',
 }
