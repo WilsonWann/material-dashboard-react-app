@@ -1,8 +1,6 @@
 
 import { all, put, take } from 'redux-saga/effects';
-import {
-    DELETE_USER, DELETE_USER_FAIL, DELETE_USER_SUCCESS, LOGIN_USER, LOGIN_USER_FAIL, LOGIN_USER_SUCCESS, REGISTER_USER, REGISTER_USER_FAIL, REGISTER_USER_SUCCESS, UPDATE_USER, UPDATE_USER_FAIL, UPDATE_USER_SUCCESS
-} from "../../actions/GetUserAction";
+import * as GetUserAction from "../../actions/GetUserAction";
 import { instance } from "./AxiosInstance";
 
 
@@ -14,13 +12,13 @@ function* UserLogin(payload) {
         const data = yield response;
         const user = data.data;
         yield put({
-            type: LOGIN_USER_SUCCESS,
+            type: GetUserAction.LOGIN_USER_SUCCESS,
             errorMessage: 'login successfully',
             payload: user,
         })
     } catch (error) {
         yield put({
-            type: LOGIN_USER_FAIL,
+            type: GetUserAction.LOGIN_USER_FAIL,
             errorMessage: error.message,
             payload: null
         })
@@ -39,20 +37,20 @@ function* UserRegister(payload) {
         });
         const responseData = yield response.data;
         yield put({
-            type: REGISTER_USER_SUCCESS,
+            type: GetUserAction.REGISTER_USER_SUCCESS,
             errorMessage: responseData.errorMessage,
             payload: responseData
         })
     } catch (error) {
         if (typeof error === "string") {
             yield put({
-                type: REGISTER_USER_FAIL,
+                type: GetUserAction.REGISTER_USER_FAIL,
                 errorMessage: error,
                 payload: null
             })
         } else {
             yield put({
-                type: REGISTER_USER_FAIL,
+                type: GetUserAction.REGISTER_USER_FAIL,
                 errorMessage: error.message,
                 payload: null
             })
@@ -66,12 +64,12 @@ function* UserUpdate(payload) {
         const response = yield instance.patch(`/user/${payload.data.id}`, payload.data);
         const responseData = yield response.data;
         yield put({
-            type: UPDATE_USER_SUCCESS,
+            type: GetUserAction.UPDATE_USER_SUCCESS,
             payload: null
         })
     } catch (error) {
         yield put({
-            type: UPDATE_USER_FAIL,
+            type: GetUserAction.UPDATE_USER_FAIL,
             errorMessage: error.message,
             payload: null
         })
@@ -85,12 +83,12 @@ function* UserDelete(payload) {
         const response = yield instance.delete(`/user/${payload.data}`);
         const responseData = yield response.data;
         yield put({
-            type: DELETE_USER_SUCCESS,
+            type: GetUserAction.DELETE_USER_SUCCESS,
             payload: null
         })
     } catch (error) {
         yield put({
-            type: DELETE_USER_FAIL,
+            type: GetUserAction.DELETE_USER_FAIL,
             errorMessage: error.message,
             payload: null
         })
@@ -105,7 +103,7 @@ function* UserDelete(payload) {
 // Watch LOGIN ACTION
 function* watchUserLoginSaga() {
     while (true) {
-        const { payload } = yield take(LOGIN_USER)
+        const { payload } = yield take(GetUserAction.LOGIN_USER)
         yield UserLogin(payload)
     }
 }
@@ -113,7 +111,7 @@ function* watchUserLoginSaga() {
 // Watch REGISTER ACTION
 function* watchUserRegisterSaga() {
     while (true) {
-        const { payload } = yield take(REGISTER_USER)
+        const { payload } = yield take(GetUserAction.REGISTER_USER)
         yield UserRegister(payload)
     }
 }
@@ -121,7 +119,7 @@ function* watchUserRegisterSaga() {
 // not implemented
 function* watchAddUserSaga() {
     while (true) {
-        const { payload } = yield take(UPDATE_USER)
+        const { payload } = yield take(GetUserAction.UPDATE_USER)
         yield UserUpdate(payload)
     }
 }
@@ -129,7 +127,7 @@ function* watchAddUserSaga() {
 // not implemented
 function* watchDeleteUserSaga() {
     while (true) {
-        const { payload } = yield take(DELETE_USER)
+        const { payload } = yield take(GetUserAction.DELETE_USER)
         yield UserDelete(payload)
     }
 }
