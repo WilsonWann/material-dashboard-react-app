@@ -1,5 +1,15 @@
 module.exports = {
   parser: "babel-eslint",
+  extends: [
+    "airbnb-base"
+  ],
+  rules: {
+    semi: ["error", "never"]
+  },
+  ecmaFeatures: {
+    jsx: true,
+    experimentalObjectRestSpread: true
+  },
   env: {
     es6: true,
     node: true,
@@ -12,10 +22,12 @@ module.exports = {
       jsx: true
     }
   },
-  plugins: ["react"],
-  extends: [
-    "eslint:recommended",
-    "plugin:react/recommended",
-    "plugin:prettier/recommended"
-  ]
+  plugins: [
+    "react"
+  ],
+  // extends: [
+  //   "eslint:recommended",
+  //   "plugin:react/recommended",
+  //   "plugin:prettier/recommended"
+  // ]
 };
